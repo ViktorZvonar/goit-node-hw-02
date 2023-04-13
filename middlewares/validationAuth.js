@@ -1,4 +1,4 @@
-const validation = (schema) => {
+const validationAuth = (schema) => {
   return (req, res, next) => {
     const { error } = schema.validate(req.body);
 
@@ -9,22 +9,8 @@ const validation = (schema) => {
       });
       return;
     }
-
-    if (
-      req.method === "PUT" &&
-      !req.body.name &&
-      !req.body.phone &&
-      !req.body.email &&
-      !req.body.id
-    ) {
-      res.status(400).json({
-        message: "missing fields",
-      });
-      return;
-    }
-
     next();
   };
 };
 
-module.exports = validation;
+module.exports = validationAuth;
