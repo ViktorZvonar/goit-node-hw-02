@@ -10,15 +10,24 @@ const authenticate = require("../../middlewares/authorization");
 
 const authSchemas = require("../../schemas/userSchema");
 
-router.post("/register", validation(authSchemas.registerSchema), ctrl.register);
+const upload = require("../../middlewares/getAvatar");
+
+router.post(
+  "/register",
+  upload.single("avatar"),
+  validation(authSchemas.registerSchema),
+  ctrl.register
+);
 router.post("/login", validation(authSchemas.loginSchema), ctrl.login);
 router.get("/current", authenticate, ctrl.getCurrent);
 router.post("/logout", authenticate, ctrl.logout);
 router.patch(
-  "/users",
+  "/",
   authenticate,
   validation(authSchemas.updateSubscriptionSchema),
   ctrl.updateSubscription
 );
+
+// router.post("/", upload.single("avatar"), ctrl.avatarData);
 
 module.exports = router;

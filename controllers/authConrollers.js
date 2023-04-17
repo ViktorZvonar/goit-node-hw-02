@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 
+const gravatar = require("gravatar");
+
 const bcrypt = require("bcrypt");
 
 const jwt = require("jsonwebtoken");
@@ -8,7 +10,17 @@ const createError = require("http-errors");
 
 const { SECRET_KEY } = process.env;
 
+const fs = require("fs/promises");
+
+const path = require("path");
+
 const register = async (req, res, next) => {
+  const tempDir = path.join(__dirname, "../temp");
+  const userAvatarDir = path.join(__dirname, "../public/avatars");
+
+  const sourcePath = path.join(tempDir, "avatar.jpg");
+  const destinationPath = path.join(userAvatarDir, "avatar.jpg");
+
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -16,13 +28,23 @@ const register = async (req, res, next) => {
       throw createError(409, "Email in use");
     }
 
+    const avatarURL = gravatar.url(email);
+
+    await fs.rename(sourcePath, destinationPath);
+    const avatar = path.join("avatars", "avatar.jpg");
+
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({ ...req.body, password: hashPassword });
+    const newUser = await User.create({
+      ...req.body,
+      password: hashPassword,
+      avatar,
+    });
     res.status(201).json({
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
+        avatar,
       },
     });
   } catch (error) {
@@ -106,10 +128,29 @@ const updateSubscription = async (req, res, next) => {
   }
 };
 
+// const avatarData = async (req, res) => {
+//   console.log(req.file);
+
+//   const tempDir = path.join(__dirname, "../temp");
+//   const publicAvatarsDir = path.join(__dirname, "../public/avatars");
+
+//   const sourcePath = path.join(tempDir, "avatar.jpg");
+//   const destinationPath = path.join(publicAvatarsDir, "avatars.jpg");
+
+//   try {
+//     await fs.rename(sourcePath, destinationPath);
+//     res.status(200).send("File moved successfully");
+//   } catch (error) {
+//     console.error("Error moving file:", error);
+//     res.status(500).send("Error moving file");
+//   }
+// };
+
 module.exports = {
   register,
   login,
   getCurrent,
   logout,
   updateSubscription,
+  // avatarData,
 };
