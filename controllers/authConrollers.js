@@ -10,16 +10,16 @@ const createError = require("http-errors");
 
 const { SECRET_KEY } = process.env;
 
-const fs = require("fs/promises");
+// const fs = require("fs/promises");
 
-const path = require("path");
+// const path = require("path");
 
 const register = async (req, res, next) => {
-  const tempDir = path.join(__dirname, "../temp");
-  const userAvatarDir = path.join(__dirname, "../public/avatars");
+  // const tempDir = path.join(__dirname, "../temp");
+  // const userAvatarDir = path.join(__dirname, "../public/avatars");
 
-  const sourcePath = path.join(tempDir, "avatar.jpg");
-  const destinationPath = path.join(userAvatarDir, "avatar.jpg");
+  // const sourcePath = path.join(tempDir, "avatar.jpg");
+  // const destinationPath = path.join(userAvatarDir, "avatar.jpg");
 
   try {
     const { email, password } = req.body;
@@ -30,21 +30,20 @@ const register = async (req, res, next) => {
 
     const avatarURL = gravatar.url(email);
 
-    await fs.rename(sourcePath, destinationPath);
-    const avatar = path.join("avatars", "avatar.jpg");
+    // await fs.rename(sourcePath, destinationPath);
+    // const avatar = path.join("avatars", "avatar.jpg");
 
     const hashPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
-      avatar,
+      avatarURL,
     });
     res.status(201).json({
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
-        avatar,
       },
     });
   } catch (error) {
