@@ -28,6 +28,11 @@ router.patch(
   ctrl.updateSubscription
 );
 
-// router.post("/", upload.single("avatar"), ctrl.avatarData);
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  ctrl.updateAvatar
+);
 
 module.exports = router;
