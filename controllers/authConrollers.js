@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 
 const { nanoid } = require("nanoid");
 
-const sendEmail = require("../middlewares/sendEmail");
+const sendEmail = require("../helpers/sendEmail");
 
 const Jimp = require("jimp");
 

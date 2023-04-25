@@ -1,14 +1,14 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const { META_PASSWORD } = process.env;
+const { META_PASSWORD, EMAIL_FROM } = process.env;
 
 const nodemailerConfig = {
   host: "smtp.meta.ua",
   port: 465,
   secure: true,
   auth: {
-    user: "viktorzvonar@meta.ua",
+    user: EMAIL_FROM,
     pass: META_PASSWORD,
   },
 };
