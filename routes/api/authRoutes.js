@@ -18,6 +18,12 @@ router.post(
   validation(authSchemas.registerSchema),
   ctrl.register
 );
+router.get("/verify/:verificationToken", ctrl.verifyEmail);
+router.post(
+  "/verify",
+  validation(authSchemas.emailSchema),
+  ctrl.resendVerifiedEmail
+);
 router.post("/login", validation(authSchemas.loginSchema), ctrl.login);
 router.get("/current", authenticate, ctrl.getCurrent);
 router.post("/logout", authenticate, ctrl.logout);
